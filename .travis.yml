@@ -1,0 +1,9 @@
+language: scala
+
+scala:
+  - 2.11.11
+
+jobs:
+  include:
+    - stage: package application
+      script: sbt clean assembly

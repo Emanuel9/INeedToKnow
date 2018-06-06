@@ -1,2 +1,5 @@
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3")
 addSbtPlugin("org.scala-sbt" % "sbt-duplicates-finder" % "0.7.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.5")
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
+addSbtPlugin("com.servicerocket" % "sbt-git-flow" % "0.1.2")
