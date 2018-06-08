@@ -80,3 +80,5 @@ object CassandraDataFrameHelper {
   }
 }
 
+case class StreetSchema(streetName:String, category:String, timestamp:String, description:String, latitude:Double, longitude:Double)
+

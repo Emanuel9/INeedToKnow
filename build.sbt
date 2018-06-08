@@ -13,7 +13,10 @@ libraryDependencies ++= Seq(
   "net.databinder.dispatch" %% "dispatch-core" % "0.11.1",
   "org.json4s" %% "json4s-native" % "3.2.9",
   "org.json4s" %% "json4s-jackson" % "3.2.9",
-  "com.google.code.gson" % "gson" % "2.8.0"
+  "com.google.code.gson" % "gson" % "2.8.0",
+  "net.ruippeixotog" %% "scala-scraper" % "2.1.0",
+  "com.typesafe" % "config" % "1.3.1",
+  "com.typesafe.akka" %% "akka-http" % "10.0.5"
 
 )
 
