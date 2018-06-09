@@ -23,8 +23,8 @@ object StreetInfoApplication extends SparkApplicationWithLogging {
   private implicit var executionContext : ExecutionContextExecutorService = _
 
   def triggerSparkJob(sparkSession: SparkSession, streetName: String, category: String): Unit = {
-//    val locationData = LocationData("Strada Academiei", "14", "Bucharest", "Romania", "010014", 44.4351979, 26.0996322   )
-    val locationData = getLocationByStreet(streetName)
+   val locationData = LocationData("Strada Academiei", "14", "Bucharest", "Romania", "010014", 44.4351979, 26.0996322   )
+    //val locationData = getLocationByStreet(streetName)
 
     val streetInfoData = CrawlerCategory.withName(category) match {
       case CrawlerCategory.AROUND => new AroundCrawling().startCrawling(locationData)

@@ -2,25 +2,23 @@ package com.emi.ineed.crawling.crime
 
 import com.emi.ineed.services.LocationData
 import com.emi.ineed.utils.{Crawler, StreetSchema}
-import com.fasterxml.jackson.databind.ObjectMapper
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model.Element
 import org.joda.time.DateTime
-import org.json4s.native.Json
 import org.json4s.DefaultFormats
+import org.json4s.native.Json
 
 class CrimeCrawling extends Crawler {
 
-  var crimeEventsUrl = config.getString("crime_safety.base")
+  var crimeUrl = config.getString("crime_safety.base")
   val category = "crime"
-  val mapper = new ObjectMapper()
 
   def startCrawling(locationData: LocationData): Seq[StreetSchema] = {
     var retrievedData: Seq[StreetSchema] = Seq[StreetSchema]()
 
-    crimeEventsUrl = crimeEventsUrl.replace("{city}", locationData.city.toString)
-    val items = browser.get(crimeEventsUrl) >?> elementList("table.table_builder_with_value_explanation")
+    crimeUrl = crimeUrl.replace("{city}", locationData.city.toString)
+    val items = browser.get(crimeUrl) >?> elementList("table.table_builder_with_value_explanation")
     items match {
       case Some(items: List[Element]) => {
         val crimeItem = items.head
