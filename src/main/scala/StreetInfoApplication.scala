@@ -23,8 +23,8 @@ object StreetInfoApplication extends SparkApplicationWithLogging {
   private implicit var executionContext : ExecutionContextExecutorService = _
 
   def triggerSparkJob(sparkSession: SparkSession, streetName: String, category: String): Unit = {
-   val locationData = LocationData("Strada Academiei", "14", "Bucharest", "Romania", "010014", 44.4351979, 26.0996322   )
-    //val locationData = getLocationByStreet(streetName)
+//   val locationData = LocationData("Strada Academiei", "14", "Bucharest", "Romania", "010014", 44.4351979, 26.0996322   )
+    val locationData = getLocationByStreet(streetName)
 
     val streetInfoData = CrawlerCategory.withName(category) match {
       case CrawlerCategory.AROUND => new AroundCrawling().startCrawling(locationData)
@@ -35,16 +35,19 @@ object StreetInfoApplication extends SparkApplicationWithLogging {
       case _ => throw new Exception(s"Couldn't match ${category} category with any existing ones!")
     }
 
-    val sc = sparkSession.sparkContext
+    if ( streetInfoData.nonEmpty ) {
 
-    val rdd = sc.parallelize(streetInfoData)
-      .map( x => Row( x.streetName, x.category, x.timestamp, x.description, x.latitude, x.longitude ))
+      val sc = sparkSession.sparkContext
 
-    val schemaHeaderString = ConfigProperties.getProperty(sparkSession, ConfigProperties.StreetDataSchemaHeader)
-    val schema = buildSchema(schemaHeaderString)
-    val df = sparkSession.sqlContext.createDataFrame(rdd, schema)
+      val rdd = sc.parallelize(streetInfoData)
+        .map(x => Row(x.streetName, x.category, x.timestamp, x.description, x.latitude, x.longitude))
 
-    writeStreetInfo(df)
+      val schemaHeaderString = ConfigProperties.getProperty(sparkSession, ConfigProperties.StreetDataSchemaHeader)
+      val schema = buildSchema(schemaHeaderString)
+      val df = sparkSession.sqlContext.createDataFrame(rdd, schema)
+
+      writeStreetInfo(df)
+    }
   }
 
   override def afterSparkJob(): Unit = {
