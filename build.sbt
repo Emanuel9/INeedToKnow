@@ -16,7 +16,9 @@ libraryDependencies ++= Seq(
   "com.google.code.gson" % "gson" % "2.8.0",
   "net.ruippeixotog" %% "scala-scraper" % "2.1.0",
   "com.typesafe" % "config" % "1.3.1",
-  "com.typesafe.akka" %% "akka-http" % "10.0.5"
+  "com.typesafe.akka" %% "akka-http" % "10.0.5",
+  "org.json4s" %% "json4s-native" % "{latestVersion}",
+  "org.json4s" %% "json4s-jackson" % "{latestVersion}"
 
 )
 

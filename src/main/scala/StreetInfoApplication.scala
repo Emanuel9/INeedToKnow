@@ -61,6 +61,6 @@ object StreetInfoApplication extends SparkApplicationWithLogging {
     writeToTable(streetData,
       TableNames.StreetData,
       ConfigProperties.StreetDataKeyspace,
-      SaveMode.Overwrite)
+      SaveMode.Append)
   }
 }

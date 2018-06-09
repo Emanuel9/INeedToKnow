@@ -3,13 +3,14 @@ package com.emi.ineed.crawling.social
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import akka.actor.FSM.Event
 import com.emi.ineed.services.LocationData
 import com.emi.ineed.utils.{Crawler, StreetSchema}
-import org.joda.time.{DateTime, Days}
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.model.Element
+import org.joda.time.{DateTime, Days}
+import org.json4s.native.Json
+import org.json4s.DefaultFormats
 
 class SocialCrawling extends Crawler {
 
@@ -20,13 +21,8 @@ class SocialCrawling extends Crawler {
   def startCrawling(locationData: LocationData): Seq[StreetSchema] = {
     var retrievedData: Seq[StreetSchema] = Seq[StreetSchema]()
 
-    var eventTitle = ""
-    var eventLocation = ""
-    var eventShortDescription = ""
-    var eventWillHappenOn = ""
-
     val start = DateTime.now
-    val end   = DateTime.now.plusDays(20)
+    val end   = DateTime.now.plusDays(30)
     val daysCount = Days.daysBetween(start, end).getDays()
     val period = (0 until daysCount).map(start.plusDays(_))
 
@@ -39,32 +35,32 @@ class SocialCrawling extends Crawler {
       items match {
         case Some(items: List[Element]) => {
           items.foreach(item => {
+            val kpiElements = collection.mutable.Map[String, String]()
+
             val nameElement = item >?> element("[property=name]") match {
-              case Some(nameElement) => eventTitle = nameElement.text
+              case Some(nameElement) => kpiElements.put( "eventTitle", nameElement.text )
               case None =>
 
             }
             val locationElement = item >?> element("[property=location]") match {
-              case Some(locationElement) => eventLocation = locationElement.text
+              case Some(locationElement) => kpiElements.put( "eventLocation", locationElement.text )
               case None =>
 
             }
             val shortDescriptionElement = item >?> element("p.short-desc") match {
-              case Some(shortDescriptionElement) => eventShortDescription = shortDescriptionElement.text
+              case Some(shortDescriptionElement) => kpiElements.put( "eventShortDescription", shortDescriptionElement.text )
               case None =>
 
             }
 
             val timeElement = item >?> element("span.time") match {
-              case Some(timeElement) => eventWillHappenOn = timeElement.text
+              case Some(timeElement) => kpiElements.put( "eventWillHappenOn", timeElement.text )
               case None =>
 
             }
 
             val timestamp = DateTime.now().toString()
-            val content =s"${eventTitle}_${eventLocation}_${shortDescriptionElement}_${eventWillHappenOn}"
-
-
+            val content = Json(DefaultFormats).write(kpiElements)
             val entity = StreetSchema(locationData.route,category,timestamp,content, locationData.latitude, locationData.longitude)
             retrievedData = retrievedData :+ entity
           })

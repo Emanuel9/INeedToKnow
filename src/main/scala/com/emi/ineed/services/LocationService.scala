@@ -28,6 +28,8 @@ object LocationService {
       if (addressComponent.types.contains("locality")) {
         city = addressComponent.longName match {
           case "București" => "Bucharest"
+          case "Pitești" => "Bucharest"
+          case "Cluj" => "Cluj-napoca"
           case _ => addressComponent.longName
         }
       }
